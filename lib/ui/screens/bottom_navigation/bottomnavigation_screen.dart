@@ -2,6 +2,7 @@ import 'package:chat_app/core/constants/string.dart';
 import 'package:chat_app/ui/screens/bottom_navigation/bottomnavigation_viewmodel.dart';
 import 'package:chat_app/ui/screens/bottom_navigation/chat_list/chatlist_screen.dart';
 import 'package:chat_app/ui/screens/bottom_navigation/profile/profile_screen.dart';
+import 'package:chat_app/ui/screens/home/home_screen.dart';
 import 'package:chat_app/ui/screens/other/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,12 +10,6 @@ import 'package:provider/provider.dart';
 
 class BottomNavigationScreen extends StatelessWidget {
   const BottomNavigationScreen({super.key});
-
-  static final List<Widget> _screens = [
-    const Center(child: Text("Home Screen")),
-    const ChatsListScreen(),
-    const ProfileScreen(),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +29,19 @@ class BottomNavigationScreen extends StatelessWidget {
       child: Consumer<BottomNavigationViewmodel>(
         builder: (context, model, _) {
           if (currentUser == null) {
-            return const Center(child: CircularProgressIndicator());
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
           }
 
+          final screens = [
+            HomeScreen(uid: currentUser.uid!), // ✅ Use actual uid
+            const ChatsListScreen(),
+            const ProfileScreen(),
+          ];
+
           return Scaffold(
-            body: BottomNavigationScreen._screens[model.currentIndex],
+            body: screens[model.currentIndex],
             bottomNavigationBar: CustomNavBar(
               onTap: model.setIndex,
               items: items,

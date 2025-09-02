@@ -5,10 +5,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class DatabaseServices {
   final _fire = FirebaseFirestore.instance;
   
-  Future<void> saveUser(Map<String, dynamic> userData, String uid) async {
+  Future<void> saveUser(Map<String, dynamic> userData, ) async {
     try {
-      await _fire.collection('users').doc(uid).set(userData);
-      log("User saved successfully with UID: $uid");
+      await _fire.collection("users").doc(userData["uid"]).set(userData);
+      log("User saved successfully");
     } catch (e) {
       rethrow;
     }
@@ -19,16 +19,32 @@ class DatabaseServices {
       // This should match how you saved the user
       final res = await _fire.collection('users').doc(uid).get();
       
-      if (res.exists) {
-        log("User loaded successfully: ${res.data()}");
+      if (res.data() != null) {
+        log("User fetched successfully");
         return res.data();
-      } else {
-        log("No user found with UID: $uid");
-        return null;
       }
+    } catch (e) {
+      rethrow;
+    }
+    return null;
+  }
+  Future<List<Map<String, dynamic>>?> fetchUser(String currentUserId) async {
+    try {
+      final res = await _fire
+          .collection('users')
+          .where('uid', isNotEqualTo: currentUserId)
+          .get();
+
+      return res.docs.map((e) => e.data()).toList();
     } catch (e) {
       log("Error loading user: $e");
       rethrow;
     }
   }
+Stream<QuerySnapshot<Map<String, dynamic>>> fetchUserStream(
+          String currentUserId) =>
+      _fire
+          .collection("users")
+          .where("uid", isNotEqualTo: currentUserId)
+          .snapshots();
 }

@@ -5,6 +5,7 @@ import 'package:chat_app/core/enums/enums.dart';
 import 'package:chat_app/core/extension/widget_extension.dart';
 import 'package:chat_app/core/services/auth_services.dart';
 import 'package:chat_app/core/services/database_services.dart';
+import 'package:chat_app/core/services/storage_services.dart';
 import 'package:chat_app/ui/screens/auth/signup/signupview_model.dart';
 import 'package:chat_app/ui/widgets/button_widget.dart';
 import 'package:chat_app/ui/widgets/textfield_widget.dart';
@@ -18,80 +19,80 @@ class SignupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => SignupviewModel(AuthService(),DatabaseServices()),
-      child: Consumer<SignupviewModel>(
-        builder: (context, model, _) {
-          return Scaffold(
-            body: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 1.sw * 0.05,
-                vertical: 10.h,
-              ),
+    return ChangeNotifierProvider<SignupviewModel>(
+      create: (context) =>
+          SignupviewModel(AuthService(), DatabaseServices(), StorageService()),
+      child: Consumer<SignupviewModel>(builder: (context, model, _) {
+        return Scaffold(
+          body: Padding(
+            padding:
+                EdgeInsets.symmetric(horizontal: 1.sw * 0.05, vertical: 10.h),
+            child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   40.verticalSpace,
                   Text("Create your account", style: h),
                   5.verticalSpace,
-                  Text(
-                    "Please provide the details",
-                    style: body.copyWith(color: grey),
-                  ),
+                  Text("Please provide the details",
+                      style: body.copyWith(color: grey)),
                   30.verticalSpace,
-
-                  // Name
+                  InkWell(
+                    onTap: () {
+                      model.pickImage();
+                    },
+                    child: model.image == null
+                        ? CircleAvatar(
+                            radius: 40.r,
+                            child: const Icon(Icons.camera_alt),
+                          )
+                        : CircleAvatar(
+                            radius: 40.r,
+                            backgroundImage: FileImage(model.image!),
+                          ),
+                  ),
+                  20.verticalSpace,
                   CustomTextfield(
                     hintText: "Enter Name",
                     onChanged: model.setName,
                   ),
                   20.verticalSpace,
-
-                  // Email
                   CustomTextfield(
                     hintText: "Enter Email",
                     onChanged: model.setEmail,
                   ),
                   20.verticalSpace,
-
-                  // Password
                   CustomTextfield(
                     hintText: "Enter Password",
                     onChanged: model.setPassword,
                     isPassword: true,
                   ),
                   20.verticalSpace,
-
-                  // Confirm Password
                   CustomTextfield(
                     hintText: "Confirm Password",
                     onChanged: model.setConfirmPassword,
                     isPassword: true,
                   ),
                   30.verticalSpace,
-
-                  // ✅ Fixed Button
                   CustomButton(
-                    loading: model.state == ViewState.loading,
-                    onPressed: model.state == ViewState.loading
-                        ? null
-                        : () async {
-                            try {
-                              await model.signup();
-                              context.showSnackbar("User signed up successfully!");
-                              Navigator.pop(context);
-                            } on FirebaseAuthException catch (e) {
-                              context.showSnackbar(e.message ?? "Signup failed");
-                            } catch (e) {
-                              context.showSnackbar(e.toString());
-                            }
-                          },
-                    text: "Sign Up",
-                  ),
-
+                      loading: model.state == ViewState.loading,
+                      onPressed: model.state == ViewState.loading
+                          ? null
+                          : () async {
+                              try {
+                                await model.signup();
+                                context
+                                    .showSnackbar("User signed up successfully!");
+              
+                                Navigator.pop(context);
+                              } on FirebaseAuthException catch (e) {
+                                context.showSnackbar(e.toString());
+                              } catch (e) {
+                                context.showSnackbar(e.toString());
+                              }
+                            },
+                      text: "Sign Up"),
                   20.verticalSpace,
-
-                  // Already have account?
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -100,22 +101,19 @@ class SignupScreen extends StatelessWidget {
                         style: body.copyWith(color: grey),
                       ),
                       InkWell(
-                        onTap: () {
-                          Navigator.pushNamed(context, login);
-                        },
-                        child: Text(
-                          "Login",
-                          style: body.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ),
+                          onTap: () {
+                            Navigator.pushNamed(context, login);
+                          },
+                          child: Text("Login",
+                              style: body.copyWith(fontWeight: FontWeight.bold)))
                     ],
                   )
                 ],
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      }),
     );
   }
 }
