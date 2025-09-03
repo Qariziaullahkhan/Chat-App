@@ -2,7 +2,6 @@ import 'package:chat_app/core/constants/colors.dart';
 import 'package:chat_app/core/constants/string.dart';
 import 'package:chat_app/core/constants/styles.dart';
 import 'package:chat_app/core/enums/enums.dart';
-import 'package:chat_app/core/extension/widget_extension.dart';
 import 'package:chat_app/core/services/auth_services.dart';
 import 'package:chat_app/ui/screens/auth/login/loginview_model.dart';
 import 'package:chat_app/ui/widgets/button_widget.dart';
@@ -49,14 +48,15 @@ class LoginScreen extends StatelessWidget {
                     onPressed: model.state == ViewState.loading
                         ? null
                         : () async {
+                            final messenger = ScaffoldMessenger.of(context);
                             try {
                               await model.login();
-                              context
-                                  .showSnackbar("User logged in successfully!");
+                              messenger.showSnackBar(
+                                  const SnackBar(content: Text("User logged in successfully!")));
                             } on FirebaseAuthException catch (e) {
-                              context.showSnackbar(e.toString());
+                              messenger.showSnackBar(SnackBar(content: Text(e.toString())));
                             } catch (e) {
-                              context.showSnackbar(e.toString());
+                              messenger.showSnackBar(SnackBar(content: Text(e.toString())));
                             }
                           },
                     text: "Login"),

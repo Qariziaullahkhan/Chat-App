@@ -83,7 +83,7 @@ class SignupviewModel extends BaseViewmodel {
         await _db.saveUser(user.toMap(),);
       }
       setstate(ViewState.idle);
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       setstate(ViewState.idle);
       rethrow;
     } catch (e) {

@@ -15,7 +15,7 @@ class BottomField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: grey.withOpacity(0.2),
+  color: grey.withAlpha((0.2 * 255).round()),
       padding: EdgeInsets.symmetric(horizontal: 1.sw * 0.05, vertical: 25.h),
       child: Row(
         children: [
@@ -67,7 +67,7 @@ class ChatBubble extends StatelessWidget {
         constraints: BoxConstraints(maxWidth: 1.sw * 0.75, minWidth: 50.w),
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-            color: isCurrentUser ? primary : grey.withOpacity(0.2),
+            color: isCurrentUser ? primary : grey.withAlpha((0.2 * 255).round()),
             borderRadius: borderRadius),
         child: Column(
           crossAxisAlignment:

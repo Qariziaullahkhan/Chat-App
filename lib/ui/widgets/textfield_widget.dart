@@ -38,7 +38,7 @@ class CustomTextfield extends StatelessWidget {
             contentPadding:
                 isChatText ? EdgeInsets.symmetric(horizontal: 12.w) : null,
             filled: true,
-            fillColor: isChatText ? white : grey.withOpacity(0.12),
+            fillColor: isChatText ? white : grey.withAlpha((0.12 * 255).round()),
             hintText: hintText,
             hintStyle: body.copyWith(color: grey),
             suffixIcon: isSearch

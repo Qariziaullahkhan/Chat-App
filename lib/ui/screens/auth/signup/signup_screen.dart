@@ -2,7 +2,6 @@ import 'package:chat_app/core/constants/colors.dart';
 import 'package:chat_app/core/constants/string.dart';
 import 'package:chat_app/core/constants/styles.dart';
 import 'package:chat_app/core/enums/enums.dart';
-import 'package:chat_app/core/extension/widget_extension.dart';
 import 'package:chat_app/core/services/auth_services.dart';
 import 'package:chat_app/core/services/database_services.dart';
 import 'package:chat_app/core/services/storage_services.dart';
@@ -79,16 +78,18 @@ class SignupScreen extends StatelessWidget {
                       onPressed: model.state == ViewState.loading
                           ? null
                           : () async {
+                              final messenger = ScaffoldMessenger.of(context);
+                              final navigator = Navigator.of(context);
                               try {
                                 await model.signup();
-                                context
-                                    .showSnackbar("User signed up successfully!");
-              
-                                Navigator.pop(context);
+                                messenger.showSnackBar(
+                                    const SnackBar(content: Text("User signed up successfully!")));
+
+                                navigator.pop();
                               } on FirebaseAuthException catch (e) {
-                                context.showSnackbar(e.toString());
+                                messenger.showSnackBar(SnackBar(content: Text(e.toString())));
                               } catch (e) {
-                                context.showSnackbar(e.toString());
+                                messenger.showSnackBar(SnackBar(content: Text(e.toString())));
                               }
                             },
                       text: "Sign Up"),

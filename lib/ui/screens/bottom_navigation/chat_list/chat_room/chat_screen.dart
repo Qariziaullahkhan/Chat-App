@@ -1,6 +1,5 @@
 import 'package:chat_app/core/constants/colors.dart';
 import 'package:chat_app/core/constants/styles.dart';
-import 'package:chat_app/core/extension/widget_extension.dart';
 import 'package:chat_app/core/models/user_model.dart';
 import 'package:chat_app/core/services/chat_services.dart';
 import 'package:chat_app/ui/screens/bottom_navigation/chat_list/chat_room/chat_widgets.dart';
@@ -55,10 +54,11 @@ class ChatScreen extends StatelessWidget {
               BottomField(
                 controller: model.controller,
                 onTap: () async {
+                  final messenger = ScaffoldMessenger.of(context);
                   try {
                     await model.saveMessage();
                   } catch (e) {
-                    context.showSnackbar(e.toString());
+                    messenger.showSnackBar(SnackBar(content: Text(e.toString())));
                   }
                 },
               )
@@ -76,9 +76,9 @@ class ChatScreen extends StatelessWidget {
           onTap: () => Navigator.pop(context),
           child: Container(
             padding: const EdgeInsets.only(left: 10, top: 6, bottom: 6),
-            decoration: BoxDecoration(
+                decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.r),
-                color: grey.withOpacity(0.15)),
+                color: grey.withAlpha((0.15 * 255).round())),
             child: const Icon(Icons.arrow_back_ios),
           ),
         ),
@@ -90,9 +90,9 @@ class ChatScreen extends StatelessWidget {
         const Spacer(),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 5),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.r),
-              color: grey.withOpacity(0.15)),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8.r),
+        color: grey.withAlpha((0.15 * 255).round())),
           child: const Icon(Icons.more_vert),
         ),
       ],
